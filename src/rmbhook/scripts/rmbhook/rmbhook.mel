@@ -7,10 +7,10 @@
 /*
 Make a call to the right click menu manager to build a custom menu if desired.
 */
-global proc int rmbhook_buildCustomMenu(string $menu) {
+global proc int rmbhook_buildMenu(string $menu) {
 	int $result;
-	if (catch($result = python("import rmbhook; rmbhook.buildCustomMenu('" + $menu + "')"))) {
-		print("Could not find rmbhook");
+	if (catch($result = python("import rmbhook; rmbhook.buildMenu('" + $menu + "')"))) {
+		print("Failed to run rmbhook.buildMenu");
 	} else if ($result) {
 		// handled as a custom menu
 		return true;
@@ -22,10 +22,10 @@ global proc int rmbhook_buildCustomMenu(string $menu) {
 /*
 Make a call to the right click menu manager to build a custom menu if desired.
 */
-global proc int rmbhook_buildCustomMenuWithObject(string $menu, string $object) {
+global proc int rmbhook_buildMenuWithObject(string $menu, string $object) {
 	int $result;
-	if (catch($result = python("import rmbhook; rmbhook.buildCustomMenu('" + $menu + "', '" + $object + "')"))) {
-		print("Could not find rmbhook");
+	if (catch($result = python("import rmbhook; rmbhook.buildMenu('" + $menu + "', '" + $object + "')"))) {
+		print("Failed to run rmbhook.buildMenu");
 	} else if ($result) {
 		// handled as a custom menu
 		return true;
