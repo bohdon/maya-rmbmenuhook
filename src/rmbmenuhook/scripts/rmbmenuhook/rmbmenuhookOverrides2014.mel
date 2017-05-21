@@ -37,7 +37,7 @@ global proc buildObjectMenuItemsNow( string $parentName)
 				dagMenuProc($parentName, $leadObject[0]);
 
 			// RMBHOOK CHANGES
-			} else if (rmbhook_buildMenu($parentName)) {
+			} else if (rmbmenuhook_buildMenu($parentName)) {
 				return;
 			// RMBHOOK END CHANGES
 
@@ -264,7 +264,7 @@ global proc dagMenuProc(string $parent, string $object)
 		setParent -m $parent;
 
 		// RMBHOOK CHANGES
-		if (rmbhook_buildMenuWithObject($parent, $object)) {
+		if (rmbmenuhook_buildMenuWithObject($parent, $object)) {
 			return;
 		}
 		// RMBHOOK END CHANGES

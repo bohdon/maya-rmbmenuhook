@@ -1,6 +1,6 @@
 #! bash
 
-PACKAGE_NAME="rmbhook"
+PACKAGE_NAME="rmbmenuhook"
 
 
 if [[ ! "$MAYA_MODULES_INSTALL_PATH" ]]; then

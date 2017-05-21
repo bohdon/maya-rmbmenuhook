@@ -17,7 +17,7 @@ class MyObjectMenu(Menu):
 
     def build(self):
         pm.setParent(self.menu, m=True)
-        pm.menuItem(l='My Action')
+        pm.menuItem(l='My Object Action')
 
 """
 

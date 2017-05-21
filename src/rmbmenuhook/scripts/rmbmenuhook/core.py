@@ -35,8 +35,8 @@ def install():
     # build list of mel scripts to source
     vers = pm.about(version=True).split(' ')[0]
     scripts = [
-        'rmbhook.mel',
-        'rmbhookOverrides{0}.mel'.format(vers),
+        'rmbmenuhook.mel',
+        'rmbmenuhookOverrides{0}.mel'.format(vers),
     ]
 
     # source using full path for each script
