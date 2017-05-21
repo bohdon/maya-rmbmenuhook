@@ -11,26 +11,27 @@ import pymel.core as pm
 import os
 
 __all__ = [
-    'install',
-    'uninstall',
+    'enable',
+    'disable',
 ]
 
 
-# original scripts that can be sourced to uninstall the rmb hooks
+# original scripts that can be sourced to remove the rmb hooks
 ORIGINAL_SCRIPTS = [
     'buildObjectMenuItemsNow',
     'dagMenuProc'
 ]
 
 
-def install():
+def enable():
     """
     Source the appropriate mel scripts
     """
 
     # ensure the overidden scripts have been sourced
     # at least once to prevent them sourcing later
-    uninstall()
+    for script in ORIGINAL_SCRIPTS:
+        pm.mel.source(script)
 
     # build list of mel scripts to source
     vers = pm.about(version=True).split(' ')[0]
@@ -45,15 +46,17 @@ def install():
         fullPath = os.path.join(dir, script).replace('\\', '/')
         print('Sourcing {0}'.format(fullPath))
         pm.mel.source(fullPath)
+    print('RMB Marking Menu Hooks enabled')
 
 
-def uninstall():
+def disable():
     """
     Source the default mel scripts
-    to uninstall any custom overrides
+    to remove any custom overrides
     """
     for script in ORIGINAL_SCRIPTS:
         pm.mel.source(script)
+    print('RMB Marking Menu Hooks disabled')
 
 
 
