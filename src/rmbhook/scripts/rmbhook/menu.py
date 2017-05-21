@@ -26,6 +26,8 @@ import pymel.core as pm
 __all__ = [
     'registerMenu',
     'unregisterMenu',
+    'getRegisteredMenu',
+    'getAllRegisteredMenus',
     'getPrioritizedMenuClasses',
     'buildMenu',
     'Menu',
@@ -50,6 +52,22 @@ def unregisterMenu(name):
     global REGISTERED_MENUS
     if name in REGISTERED_MENUS:
         del REGISTERED_MENUS[name]
+
+def getRegisteredMenu(name):
+    """
+    Return the menu class that is registered under
+    the given name
+    """
+    global REGISTERED_MENUS
+    if name in REGISTERED_MENUS:
+        return REGISTERED_MENUS[name]
+
+def getAllRegisteredMenus():
+    """
+    Return all registered menus
+    """
+    global REGISTERED_MENUS
+    return REGISTERED_MENUS.items()
 
 def getPrioritizedMenuClasses():
     """
