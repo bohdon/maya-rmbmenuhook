@@ -34,7 +34,7 @@ rmbmenuhook.registerMenu('IKFKSwitchMenu', IKFKSwitchMenu, 1)
 
 ## Installation
 
-Download and copy the `rmbmenuhook` folder and `rmbmenuhook.mod` file into your `~/Documents/maya/modules` folder.
+Download the [latest release](https://github.com/bohdon/maya-rmbmenuhook/releases/latest) and unzip the contents into your `~/Documents/maya/modules` folder.
 
 Add the following to `userSetup.py`:
 
