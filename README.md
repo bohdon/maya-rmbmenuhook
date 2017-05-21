@@ -31,3 +31,15 @@ class IKFKSwitchMenu(rmbmenuhook.Menu):
 # register the menu by name, so it can be unregistered by name, and give it a priority
 rmbmenuhook.registerMenu('IKFKSwitchMenu', IKFKSwitchMenu, 1)
 ```
+
+## Installation
+
+Download and copy the `rmbmenuhook` folder and `rmbmenuhook.mod` file into your `~/Documents/maya/modules` folder.
+
+Add the following to `userSetup.py`:
+
+```python
+# enable RMB Marking Menu Hook
+import rmbmenuhook
+rmbmenuhook.enable()
+```
