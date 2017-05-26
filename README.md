@@ -43,3 +43,12 @@ Add the following to `userSetup.py`:
 import rmbmenuhook
 rmbmenuhook.enable()
 ```
+
+
+## Version 1.0.1 (2017-05-26)
+- Updates 2015 mel overrides
+
+## Version 1.0.0 (2017-05-21)
+- Adds 2017 mel overrides
+- Adds registering and unregistering menus as a replacement for finding subclasses
+
