@@ -1,4 +1,4 @@
-#! bash
+#! /bin/bash
 
 PACKAGE_NAME="rmbmenuhook"
 
