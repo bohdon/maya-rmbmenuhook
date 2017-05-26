@@ -114,10 +114,10 @@ global proc buildObjectMenuItemsNow( string $parentName)
 				if (size($leadObject) > 0) {
 					dagMenuProc($parentName, $leadObject[0]);
 
-			// RMBHOOK CHANGES
-			} else if (rmbmenuhook_buildMenu($parentName)) {
-				return;
-			// RMBHOOK END CHANGES
+				// RMBHOOK CHANGES
+				} else if (rmbmenuhook_buildMenu($parentName)) {
+					return;
+				// RMBHOOK END CHANGES
 
 				} else {
 					if (`modelingTookitActive` && (`nexCtx -rmbComplete -q`) ) {
