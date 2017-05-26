@@ -1,5 +1,5 @@
 /*
-	Contains overridden global procedures for Maya 2014
+	Contains overridden global procedures for Maya 2015
 	
 	These overridden functions have hooks added that make
 	calls to the rmb menu manager.
@@ -30,32 +30,113 @@ global proc buildObjectMenuItemsNow( string $parentName)
 		if (`popupMenu -q -mm $parentName` != $gIsMarkingMenuOn) {
 			popupMenu -e -mm $gIsMarkingMenuOn $parentName;
 		}
+		if (mayaHasCustomPivotFeature()) {
+			int $editMode = 0;
+			string $currentContext = `currentCtx`; 
+			if (`contextInfo -exists $currentContext`) {
+	            string $ctx = `contextInfo -c $currentContext`; 
+	           	if ($ctx == "manipMove") { 
+			   	    $editMode = `manipMoveContext -q -editPivotMode Move`;
+			  	} else if ($ctx == "manipScale") { 
+					$editMode = `manipScaleContext -q -editPivotMode Scale`;
+				} else if ($ctx == "manipRotate") { 
+					$editMode = `manipRotateContext -q -editPivotMode Rotate`;
+				}
+			}
 
-		if (!`dagObjectHit -mn $parentName`) {
-			string $leadObject[] = `ls -sl -tail 1 -typ transform -typ shape`;
-			if (size($leadObject) > 0) {
-				dagMenuProc($parentName, $leadObject[0]);
-
-			// RMBHOOK CHANGES
-			} else if (rmbmenuhook_buildMenu($parentName)) {
-				return;
-			// RMBHOOK END CHANGES
-
-			} else {
+			if ($editMode) {
 				setParent -menu $parentName;
-
+	
 				menuItem
-					-version "2014"
-					-label (uiRes("m_buildObjectMenuItemsNow.kSelectAll"))
-					-radialPosition "S"
-					-command ("SelectAll");
-
-            	menuItem
-					-label (uiRes("m_buildObjectMenuItemsNow.kCompleteTool"))
+					-label (uiRes("m_buildObjectMenuItemsNow.kPinComponentPivot"))
+					-checkBox `manipPivot -q -pin`
 					-radialPosition "N"
-					-command ("CompleteCurrentTool");
+					-command ("setTRSPinPivot #1");
+	
+	            menuItem
+					-label (uiRes("m_buildObjectMenuItemsNow.kResetPivot"))
+					-radialPosition "S"
+					-command ("manipPivotReset true true");
+	
+	            menuItem
+					-label (uiRes("m_buildObjectMenuItemsNow.kResetPivotOrientation"))
+					-radialPosition "SW"
+					-command ("manipPivotReset false true");
+	
+	            menuItem
+					-label (uiRes("m_buildObjectMenuItemsNow.kResetPivotPosition"))
+					-radialPosition "SE"
+					-command ("manipPivotReset true false");
+	
+	            setParent ..;
+			} else {
+				if (!`dagObjectHit -mn $parentName`) {
+					// Nothing was hit - check selection/hilight list...
+					string $leadObject[] = `ls -sl -tail 1 -typ transform -typ shape`;
+					if (size($leadObject) == 0) {
+						$leadObject = `ls -hl -tail 1 -typ transform -typ shape`;
+					}				
+					if (size($leadObject) > 0) {
+						dagMenuProc($parentName, $leadObject[0]);
+					
+					// RMBHOOK CHANGES
+					} else if (rmbmenuhook_buildMenu($parentName)) {
+						return;
+					// RMBHOOK END CHANGES
 
-            	setParent ..;
+					} else {
+						if (`modelingTookitActive` && (`nexCtx -rmbComplete -q`) ) {
+							ctxCompletion;
+							return;
+						}
+						setParent -menu $parentName;
+	
+						menuItem
+							-version "2014"
+							-label (uiRes("m_buildObjectMenuItemsNow.kSelectAll2015Ext1"))
+							-radialPosition "S"
+							-command ("SelectAll");
+	
+	            		menuItem
+							-label (uiRes("m_buildObjectMenuItemsNow.kCompleteTool2015Ext1"))
+							-radialPosition "N"
+							-command ("CompleteCurrentTool");
+	
+	            		setParent ..;
+					}
+				}
+			}
+		} else {
+			if (!`dagObjectHit -mn $parentName`) {
+				string $leadObject[] = `ls -sl -tail 1 -typ transform -typ shape`;
+				if (size($leadObject) > 0) {
+					dagMenuProc($parentName, $leadObject[0]);
+
+				// RMBHOOK CHANGES
+				} else if (rmbmenuhook_buildMenu($parentName)) {
+					return;
+				// RMBHOOK END CHANGES
+
+				} else {
+					if (`modelingTookitActive` && (`nexCtx -rmbComplete -q`) ) {
+						ctxCompletion;
+						return;
+					}
+					setParent -menu $parentName;
+	
+					menuItem
+						-version "2014"
+						-label (uiRes("m_buildObjectMenuItemsNow.kSelectAll"))
+						-radialPosition "S"
+						-command ("SelectAll");
+	
+	            	menuItem
+						-label (uiRes("m_buildObjectMenuItemsNow.kCompleteTool"))
+						-radialPosition "N"
+						-command ("CompleteCurrentTool");
+	
+	            	setParent ..;
+				}
 			}
 		}
 	} else {
@@ -245,6 +326,10 @@ proc setUpArtisanSkinContext(string $parent, string $object)
 //
 global proc dagMenuProc(string $parent, string $object)
 {
+	if (`exists modelingTookitActive` && `modelingTookitActive` && (`nexCtx -q -rmbComplete`) ) {
+		ctxCompletion;
+		return;
+	}
 	global string $artSelectObject ;
 	string $mode = "";
 
@@ -314,6 +399,10 @@ global proc dagMenuProc(string $parent, string $object)
 				menuItem -d true;
 			}
 
+			menuItem -d true;
+			menuItem -version "2014" -c ("makeLive " + $object) -en (`canMakeLive $object`) -label (uiRes("m_dagMenuProc.kMakeLive"));
+			menuItem -d true;
+
 		    optionalDagMenuProc( $parent, $object );
 
 		    // Create the dg traversal menu
@@ -337,7 +426,6 @@ global proc dagMenuProc(string $parent, string $object)
 	 	    // Look at the shape child of this object
 	 	    //
  		    string $shapes[] = `listRelatives -path -s $object`;
-
 		    // get current selection of shapes
 		    string $currentSel[] = `ls -sl -dagObjects -shapes` ;
 
@@ -438,7 +526,6 @@ global proc dagMenuProc(string $parent, string $object)
                 menu -e -pmc ( "createSceneAssemblyMenuItems \""+$menu+"\"" ) $menu;
 			    setParent -m $parent;  
 			}          
-
 		    // Shader menu to be able to quickly assign existing shaders
 		    // to the object under the pointer.
 		    //
@@ -467,15 +554,16 @@ global proc dagMenuProc(string $parent, string $object)
 				//
 				callbacks -executeCallbacks -hook "addRMBBakingMenuItems" $object;
 				setParent -m $parent;
-			}
-
-    //		{
-    // 			$menu = `menuItem -subMenu true -label $paint `;
-    //			menu -e
-    //				-pmc ( "createPaintingMenuItems \""+$menu+"\" "+$object )
-    //				$menu;
-    // 			setParent -m $parent;
-    //		}
+			} 
+		    string $shape = objectHandlesBifrost( $object );
+		    if ($shape != "")
+		    {
+			    $menu = `menuItem -subMenu true -label (uiRes("m_dagMenuProc.kBifrost")) `;
+			    menu -e 
+				    -pmc ( "createBifrostMenuItems \""+$menu+"\" " +$object + " "+ $shape )
+				    $menu;
+			    setParent -m $parent;
+		    }
 
 		    if ($mode == "dynamicsMenuSet") {
 			    menuItem -d true;
