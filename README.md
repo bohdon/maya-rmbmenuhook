@@ -44,6 +44,8 @@ import rmbmenuhook
 rmbmenuhook.enable()
 ```
 
+## Version 1.0.2 (2017-10-21)
+- Adds 2018 mel overrides
 
 ## Version 1.0.1 (2017-05-26)
 - Updates 2015 mel overrides
