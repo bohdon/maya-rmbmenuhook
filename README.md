@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> This project was moved into [maya-workflowtools](https://github.com/bohdon/maya-workflowtools)
+
 # Maya RMB Marking Menu Hook
 
 A very specific util for hooking into and extending the right mouse button marking menus in Maya.
